@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub 仓库导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .repo-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .repo-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .repo-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .repo-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .repo-name svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .repo-url-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+        }
+
+        .repo-url {
+            flex: 1;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.95rem;
+            color: #495057;
+            word-break: break-all;
+        }
+
+        .copy-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.98);
+        }
+
+        .copy-btn.copied {
+            background: #28a745;
+        }
+
+        .repo-desc {
+            margin-top: 15px;
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 50px;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .repo-url-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .copy-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 GitHub 仓库导航</h1>
+            <p>快速克隆和访问我的所有 GitHub 仓库</p>
+        </div>
+
+        <div class="repo-list" id="repoList">
+            <!-- 仓库列表将通过 JavaScript 渲染 -->
+        </div>
+
+        <div class="footer">
+            <p>💻 Made with ❤️ for developers</p>
+        </div>
+    </div>
+
+    <script>
+        // 仓库配置 - 在这里添加新的仓库
+        const repositories = [
+            {
+                name: "Fantasy关键资源",
+                url: "git@github.com:lanyanbingfeng/FantasyAsset.git",
+                description: "Fantasy关键资源 实现了基本的位置同步"
+            },
+            {
+                name: "待更新",
+                url: "git@github.com:lanyanbingfeng/Null.git",
+                description: "仓库描述"
+            }
+        ];
+
+        // 渲染仓库列表
+        function renderRepositories() {
+            const repoList = document.getElementById('repoList');
+            repoList.innerHTML = repositories.map(repo => `
+                <div class="repo-card">
+                    <div class="repo-name">
+                        <svg viewBox="0 0 16 16" fill="currentColor">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+                        </svg>
+                        ${repo.name}
+                    </div>
+                    <div class="repo-url-container">
+                        <span class="repo-url">${repo.url}</span>
+                        <button class="copy-btn" onclick="copyToClipboard('${repo.url}', this)">
+                            📋 复制
+                        </button>
+                    </div>
+                    ${repo.description ? `<div class="repo-desc">${repo.description}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        // 复制到剪贴板
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '✓ 已复制';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                // 降级方案
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                
+                const originalText = button.innerHTML;
+                button.innerHTML = '✓ 已复制';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        // 初始化
+        renderRepositories();
+    </script>
+</body>
+</html>
